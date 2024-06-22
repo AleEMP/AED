@@ -155,7 +155,18 @@ struct avl {
 			ewe.pop();
 		}
 	}
-
+	void inOr(nodo* r, std::vector<nodo*>& vec1) {
+		if (!r) return;
+		inOr(r->nodos[0], vec1);
+		vec1.push_back(r);
+		inOr(r->nodos[1], vec1);
+	}
+	void preOr(nodo* r, std::vector<nodo*>& vec2) {
+		if (!r) return;
+		vec2.push_back(r);
+		preOr(r->nodos[0], vec2);
+		preOr(r->nodos[1], vec2);
+	}
 	void print_wonito() {
 		owo(root,0);
 		queue <nodo*> ewe;
@@ -164,7 +175,6 @@ struct avl {
 		//root->espacio = (root->espacio * 2);
 		while (!ewe.empty())
 		{
-			
 			int nivel = ewe.front()->nivel;
 			while (!ewe.empty() and nivel == ewe.front()->nivel) {
 				/*if (ewe.front()->val > root->val) {
@@ -194,6 +204,49 @@ struct avl {
 		}
 		
 	}
+
+	void printowo() {
+		std::vector<nodo*> vec1;
+		std::vector<nodo*> vec2;
+		inOr(root, vec1);
+		preOr(root, vec2);
+		por_nivel();
+
+		// Obtener los niveles
+		std::vector<std::vector<nodo*>> niveles;
+		queue<nodo*> q;
+		q.push(root);
+		while (!q.empty()) {
+			int size = q.size();
+			std::vector<nodo*> nivel;
+			for (int i = 0; i < size; ++i) {
+				nodo* actual = q.front();
+				q.pop();
+				nivel.push_back(actual);
+				if (actual->nodos[0]) q.push(actual->nodos[0]);
+				if (actual->nodos[1]) q.push(actual->nodos[1]);
+			}
+			niveles.push_back(nivel);
+		}
+		for (size_t i = 0; i < niveles.size(); i++) {
+            std::vector<nodo*>& nivel = niveles[i];
+            for (int j = 0; j < vec1.size(); j++) {
+                bool encontrado = false;
+                for (size_t k = 0; k < nivel.size(); k++) {
+                    nodo* nodo_actual = nivel[k];
+                    if (vec1[j] == nodo_actual) {
+                        cout << nodo_actual->val;
+                        encontrado = true;
+                        break;
+                    }
+                }
+				if (!encontrado) {
+					cout << " ";
+				}
+			}
+			cout << endl;
+		}
+	}
 };
 int main()
 {
@@ -207,5 +260,5 @@ int main()
 	owo.push(5);
 	owo.push(2);
 	owo.push(3);
-	owo.print_wonito();
+	owo.printowo();
 }
